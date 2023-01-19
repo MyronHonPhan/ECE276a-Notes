@@ -1,0 +1,116 @@
+\documentclass{article}
+\usepackage{amsmath}
+\begin{document}
+\section{Euler Angle Parametrization}
+You only need three angles (which we can achieve through rotations) to fully specify an object's orientation in 3D. We can denote these angles with respect to the 3
+basis vectors in Euclidian space.\\
+
+\noindent In general, we can apply these rotations either about the axes or on the axes. This is respectively
+called \textbf{extrinsic axes} and \textbf{intrinsic axes}. Each of the extrinsic and intrinsic axes approaches can be further split
+into the \textbf{Euler} (where you rotate one axis at a time) and \textbf{Tait-Bryan} (where you rotate all axes at once) Angles.\\
+
+\noindent As a result, there are 24 ways that we can apply these rotations. This is because there are 3!=6 ways that you can apply the
+sequence of rotations. From the multiplication rule in combinatorics, we multiply by 2 (for the two Euler and
+Tait-Bryan angles) and multiply by 2 again (for the two extrinsic and intrinsic approaches) to get 24.
+\begin{equation*}
+	2*2*6=24
+\end{equation*}
+There is no practical difference to using extrinsic or intrinsic rotations. An extrinsic sequence of rotations is equivalent to an 
+intrinsic set of rotations, just in reverse order.
+\subsection*{Principal 3D Rotations}
+An implicit representation (in essence, overparametrizing the rotation) of 3D rotations is using rotation matrices. if
+we wanted to rotate about the X axis, then the rotation matrix of\\
+
+\begin{equation*}
+    X = 
+    \begin{bmatrix}
+    1 & 0 & 0 \\
+    0 & \cos(\phi) & -\sin(\phi) \\
+    0 & \sin(\phi) & \cos(\phi)
+    \end{bmatrix}
+\end{equation*}\\
+
+\noindent Where we rotate an angle $\phi$ about or on the x-axis. We can perform similar rotations about/on the
+y or z axis\\
+
+\begin{equation*}
+    Y = 
+    \begin{bmatrix}
+    \cos(\theta) & 0 & \sin(\theta) \\
+    0 & 1 & 0 \\
+    -\sin(\theta) & 0 & \cos(\theta)
+    \end{bmatrix}
+    \quad
+    Z = 
+    \begin{bmatrix}
+        \cos(\psi) & -\sin(\psi) & 0\\
+        \sin(\psi) & \cos(\psi) & 0 \\
+        0 & 0 & 1
+    \end{bmatrix}
+\end{equation*}\\
+
+\noindent These rotation angles ($\phi$,$\theta$,$\psi$), are called roll (X), pitch (Y) and yaw (Z). These terms and the order in 
+which we specify them (X then Y then Z) is standard terminology in aerospace. We can combine these three rotations to 
+achieve any orientation in 3D space.
+
+\begin{equation*}
+    R=    \begin{bmatrix}
+        1 & 0 & 0 \\
+        0 & \cos(\phi) & -\sin(\phi) \\
+        0 & \sin(\phi) & \cos(\phi)
+        \end{bmatrix}
+        \begin{bmatrix}
+            \cos(\theta) & 0 & \sin(\theta) \\
+            0 & 1 & 0 \\
+            -\sin(\theta) & 0 & \cos(\theta)
+        \end{bmatrix}
+        \begin{bmatrix}
+            \cos(\psi) & -\sin(\psi) & 0\\
+            \sin(\psi) & \cos(\psi) & 0 \\
+            0 & 0 & 1
+        \end{bmatrix}
+\end{equation*}
+
+\subsection*{Gimbal Lock}
+
+Parametrization in terms of Euler angles can lead to interesting and annoying results. A result that we want
+to avoid is called \textbf{gimbal lock}. This is a singularity that happens when we rotate by 90 degrees to a north
+or south pole (on a metaphorical sphere). The result of this singularity is losing a degree of freedom.\\
+
+\noindent Let's say we wanted to specify a sequence of intrinsic rotations starting with a 90 degree Y rotation. The
+resulting rotation matrix would be:
+\begin{equation*}
+    Y = 
+    \begin{bmatrix}
+    0 & 0 & 1 \\
+    0 & 1 & 0 \\
+    -1 & 0 & 0
+    \end{bmatrix}
+\end{equation*}
+If we applied that to the X rotation matrix, we would get this:
+\begin{equation*}
+    \begin{bmatrix}
+        0 & 0 & 1 \\
+        \sin(\phi) & \cos(\phi) & 0\\
+        -\cos(\phi) & \sin(\phi) & 0 \\
+    \end{bmatrix}
+\end{equation*}
+This actually corresponds with a rotation about the Z axis. We can easily show this through plugging in 90 degrees into
+$\phi$ and applying it onto a unit vector in the x-direction:\\
+\begin{equation*}
+    \begin{bmatrix}
+    0 & 0 & 1 \\
+    1 & 0 & 0\\
+    0 & 1 & 0 \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        1 \\ 0 \\ 0
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        0 \\ 1 \\ 0
+    \end{bmatrix}
+\end{equation*}\\
+This shows that we lose a degree of freedom if we pitch too much (by 90 degrees, to be exact) into the gimbal lock singularity.
+We are quite literally unable to rotate in the x direction (only y and z are allowed) unless we pitched out of this singularity.
+\end{document}
